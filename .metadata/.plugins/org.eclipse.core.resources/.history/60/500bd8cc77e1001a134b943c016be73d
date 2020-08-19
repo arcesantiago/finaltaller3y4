@@ -1,28 +1,22 @@
 package src;
 
-import java.util.ArrayList;
-
 public class Restoranes implements ICrud<Restoranes>{
 	
 	private long id;
 	private String nombre;
-	public ArrayList<Restoranes> listaRestoranes;
 	
 	
-	public Restoranes(String nombre) {
+	public Restoranes(String nombre,long precio) {
 		this.nombre = nombre;
-		
 	}
 	
-	@Override
 	public long getId() {
 		return id;
 	}
-	@Override
+
 	public String getNombre() {
 		return nombre;
 	}
-	@Override
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
@@ -30,18 +24,19 @@ public class Restoranes implements ICrud<Restoranes>{
 
 	@Override
 	public void add(Restoranes t) {
-		listaRestoranes.add(t);
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void delete(long id) {
-		listaRestoranes.remove(id);
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public ArrayList<Restoranes> getList() {
-			return listaRestoranes;
+	public Restoranes getList() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -44,8 +44,8 @@ public class Administrador extends JFrame {
 	public Administrador() {
 
         JFrame frame = new JFrame();
-        JPanel productosPanel = new JPanel();
-        productosPanel.setBorder(BorderFactory.createTitledBorder(
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createTitledBorder(
         BorderFactory.createEtchedBorder(), "Productos", TitledBorder.LEFT,
         TitledBorder.TOP));
         String[][] rec = {
@@ -96,11 +96,11 @@ public class Administrador extends JFrame {
         };
         String[] header = { "Codigo", "Nombre", "Precio" };
         JTable table = new JTable(rec, header);
-        productosPanel.add(new JScrollPane(table));
-        frame.getContentPane().add(productosPanel);
+        panel.add(new JScrollPane(table));
+        frame.getContentPane().add(panel);
         
-        JPanel restoranPanel = new JPanel();
-        frame.getContentPane().add(restoranPanel, BorderLayout.NORTH);
+        JPanel panel_1 = new JPanel();
+        frame.getContentPane().add(panel_1, BorderLayout.NORTH);
         
         JComboBox comboBox = new JComboBox();
         comboBox.setPrototypeDisplayValue("Seleccione un restoran");
@@ -110,15 +110,15 @@ public class Administrador extends JFrame {
         comboBox.setMaximumSize( comboBox.getPreferredSize() );
         comboBox.addItem("asdasdasdasdasdasdasdasdasd");
         
-        restoranPanel.add(comboBox);
+        panel_1.add(comboBox);
         
-        JButton agregarRestoran = new JButton("Agregar");
-        restoranPanel.add(agregarRestoran);
+        JButton btnNewButton = new JButton("Agregar");
+        panel_1.add(btnNewButton);
         
-        JButton eliminarRestoran = new JButton("Eliminar");
-        restoranPanel.add(eliminarRestoran);
+        JButton btnNewButton_1 = new JButton("Eliminar");
+        panel_1.add(btnNewButton_1);
         
-        restoranPanel.setBorder(BorderFactory.createTitledBorder(
+        panel_1.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), "Restoranes", TitledBorder.LEFT,
                 TitledBorder.TOP));
         frame.setSize(1000, 700);

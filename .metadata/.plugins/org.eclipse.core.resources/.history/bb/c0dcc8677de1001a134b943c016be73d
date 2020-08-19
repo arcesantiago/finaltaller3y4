@@ -6,7 +6,6 @@ public class Productos implements ICrud<Productos>{
 
 	private long id;
 	private String nombre;
-	private long precio;
 	public ArrayList<Productos> listaProductos;
 	
 	@Override
@@ -39,4 +38,5 @@ public class Productos implements ICrud<Productos>{
 		this.nombre = nombre;
 		
 	}
+
 }

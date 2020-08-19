@@ -121,7 +121,16 @@ public class Administrador extends JFrame {
         restoranPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), "Restoranes", TitledBorder.LEFT,
                 TitledBorder.TOP));
-        frame.setSize(1000, 700);
+        
+        JPanel panel = new JPanel();
+        frame.getContentPane().add(panel, BorderLayout.SOUTH);
+        
+        JButton btnNewButton = new JButton("New button");
+        panel.add(btnNewButton);
+        
+        JButton btnNewButton_1 = new JButton("New button");
+        panel.add(btnNewButton_1);
+        frame.setSize(500, 600);
         frame.setVisible(true);
     }
 
