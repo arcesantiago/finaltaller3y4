@@ -1,0 +1,328 @@
+package src;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.Image;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import javax.swing.JSplitPane;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ImageIcon;
+import javax.swing.BoxLayout;
+
+public class Administrador extends JFrame implements ActionListener  {
+	private JTable table;
+	static JFrame frame;
+	static JDialog d; 
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					new Administrador();
+					
+	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 * @throws IOException 
+	 */
+	public Administrador() throws IOException {
+
+        frame = new JFrame();
+        JPanel productosPanel = new JPanel();
+        productosPanel.setBorder(BorderFactory.createTitledBorder(
+        BorderFactory.createEtchedBorder(), "Productos", TitledBorder.LEFT,
+        TitledBorder.TOP));
+        
+        Restoranes restoranes = new Restoranes();
+        Productos productos = new Productos();
+
+        JSplitPane splitPane = new JSplitPane();
+        splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        productosPanel.add(splitPane);
+        JTable table_1 = new JTable();
+        DefaultTableModel dtm = new DefaultTableModel(0, 0);
+        String[] header = { "Codigo", "Nombre", "Precio" };
+        dtm.setColumnIdentifiers(header);
+        table_1.setModel(dtm);
+        
+        JScrollPane scrollPane = new JScrollPane(table_1);
+        splitPane.setLeftComponent(scrollPane);
+        
+        JSplitPane splitPane_1 = new JSplitPane();
+        splitPane_1.setResizeWeight(0.5);
+        splitPane.setRightComponent(splitPane_1);
+        
+        JTextField nombreProducto = new JTextField(5);
+        JTextField precioProducto = new JTextField(5);
+        
+        precioProducto.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent ke) {
+               if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+            	   precioProducto.setEditable(true);
+            
+               } else {
+            	   precioProducto.setEditable(false);
+   
+               }
+            }
+         });
+
+        JPanel panelProductos = new JPanel();
+        panelProductos.add(new JLabel("Nombre:"));
+        panelProductos.add(nombreProducto);
+        panelProductos.add(Box.createHorizontalStrut(15));
+        panelProductos.add(new JLabel("Precio:"));
+        panelProductos.add(precioProducto);
+        
+        JButton agregarProducto = new JButton("Agregar");
+        splitPane_1.setLeftComponent(agregarProducto);
+  
+        JComboBox<Restoran> comboBox = new JComboBox<Restoran>();
+        
+        agregarProducto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				int result = JOptionPane.showConfirmDialog(null,panelProductos,"Ingrese los datos del producto:", JOptionPane.OK_CANCEL_OPTION);
+				
+				String _nombreProducto = nombreProducto.getText();
+				long _precioProducto = 0;
+				
+				try {
+					_precioProducto = Long.parseLong(precioProducto.getText());
+				} catch (NumberFormatException e2) {
+					JOptionPane.showMessageDialog(null, "No se pudo ingresar. Los campos son obligatorios.");
+					nombreProducto.setText("");
+					precioProducto.setText("");
+					return;
+				}
+				
+				
+				if(result == JOptionPane.OK_OPTION && _nombreProducto.length() > 0 && _precioProducto > 0){
+					Restoran selectedRestoran = (Restoran) comboBox.getSelectedItem();
+					
+					productos.add(new Producto(selectedRestoran.id,_nombreProducto,_precioProducto));
+
+					int rowCount = dtm.getRowCount();
+					for (int i = rowCount - 1; i >= 0; i--) {
+						dtm.removeRow(i);
+					}
+			           
+			           
+			           for (Producto producto : productos.getList(selectedRestoran.id)) {
+			        	   dtm.addRow(new String[] { "" + producto.id,(String)producto.nombre,"" + producto.precio });
+					}
+				}
+				
+			
+					
+				else {
+					JOptionPane.showMessageDialog(null, "No se pudo ingresar. Los campos son obligatorios.");
+				}
+				
+				nombreProducto.setText("");
+				precioProducto.setText("");
+				
+			}
+		}); 
+        
+        JButton eliminarProducto = new JButton("Eliminar");
+        splitPane_1.setRightComponent(eliminarProducto);
+
+        
+        eliminarProducto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				JOptionPane.showMessageDialog(null, "Esta seguro que desea eliminar el producto?");
+				
+				Restoran selectedRestoran = (Restoran) comboBox.getSelectedItem();
+				
+				String idProducto = table_1.getValueAt(table_1.getSelectedRow(),0).toString();
+				
+				productos.delete( new Producto(selectedRestoran.id,Long.parseLong(idProducto)));
+				
+				int rowCount = dtm.getRowCount();
+				for (int i = rowCount - 1; i >= 0; i--) {
+					dtm.removeRow(i);
+				}
+				
+				 for (Producto producto : productos.getList(selectedRestoran.id)) {
+		        	   dtm.addRow(new String[] { "" + producto.id,(String)producto.nombre,"" + producto.precio });
+				}
+				
+				
+			}
+		}); 
+        
+        frame.getContentPane().add(productosPanel, BorderLayout.SOUTH);
+        
+        JPanel restoranPanel = new JPanel();
+        frame.getContentPane().add(restoranPanel, BorderLayout.CENTER);
+
+        restoranPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(), "Restoranes", TitledBorder.LEFT,
+                TitledBorder.TOP));
+        restoranPanel.setLayout(new BoxLayout(restoranPanel, BoxLayout.X_AXIS));
+        
+        JSplitPane splitPane_2 = new JSplitPane();
+        splitPane_2.setResizeWeight(1.0);
+        restoranPanel.add(splitPane_2);
+        
+        JSplitPane splitPane_3 = new JSplitPane();
+        splitPane_2.setRightComponent(splitPane_3);
+        
+        JButton agregarRestoran = new JButton("Agregar");
+        splitPane_3.setLeftComponent(agregarRestoran);
+        
+
+        JPanel panelRestoranes = new JPanel();
+        JTextField nombreRestoran = new JTextField(20);
+        panelRestoranes.add(new JLabel("Nombre:"));
+        panelRestoranes.add(nombreRestoran);
+        
+        
+
+        agregarRestoran.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				int result = JOptionPane.showConfirmDialog(null,panelRestoranes,"Ingrese los datos del producto:", JOptionPane.OK_CANCEL_OPTION);
+				String nuevoRestoran = nombreRestoran.getText();
+				
+				if(result == JOptionPane.OK_OPTION)
+					if(nuevoRestoran.length() > 0) {
+						comboBox.removeAllItems();
+						
+						restoranes.add(new Restoran(nuevoRestoran));
+
+						for (Restoran restoran : restoranes.getList()) {
+				        	comboBox.addItem(restoran);
+						}
+					}
+				
+				else {
+					JOptionPane.showMessageDialog(null, "No se pudo ingresar. El campo es obligatorio");
+				}
+				nombreRestoran.setText("");
+			}
+		}); 
+
+        JButton eliminarRestoran = new JButton("Eliminar");
+        splitPane_3.setRightComponent(eliminarRestoran);
+        
+        eliminarRestoran.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				JOptionPane.showMessageDialog(null, "Esta seguro que desea eliminar el restoran");
+				
+				restoranes.delete((Restoran) comboBox.getSelectedItem());
+				
+				comboBox.removeAllItems();
+				
+				for (Restoran restoran : restoranes.getList()) {
+		        	comboBox.addItem(restoran);
+				}
+			}
+		}); 
+        
+      
+        
+        splitPane_2.setLeftComponent(comboBox);
+        
+        for (Restoran restoran : restoranes.getList()) {
+        	comboBox.addItem(restoran);
+		}
+        
+        comboBox.addActionListener (new ActionListener () {
+            public void actionPerformed(ActionEvent e) {
+            	
+            	new Runnable() {
+					
+					@Override
+					public void run() {
+						Restoran selectedRestoran = (Restoran) comboBox.getSelectedItem();
+		            	
+		            	int rowCount = dtm.getRowCount();
+						for (int i = rowCount - 1; i >= 0; i--) {
+							dtm.removeRow(i);
+						}
+		           if(selectedRestoran != null)
+		           for (Producto producto : productos.getList(selectedRestoran.id)) {
+		        	   dtm.addRow(new String[] { "" + producto.id,(String)producto.nombre,"" + producto.precio });
+				}
+		           run();
+					}
+					
+				};
+            	
+            }
+        });
+
+        
+        JPanel panel = new JPanel();
+        
+        
+        ImageIcon i = new ImageIcon(Administrador.class.getResource("/src/logo.png"));
+        Image scaled = i.getImage().getScaledInstance(100, 100, i.getImage().SCALE_SMOOTH);
+        JLabel jl=new JLabel(new ImageIcon(scaled));
+
+        panel.add(jl);
+    
+ 
+        frame.getContentPane().add(panel, BorderLayout.NORTH);
+        frame.setSize(600, 725);
+        frame.setVisible(true);
+    }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
+
+	
+}
+		
+
+	
+
+

@@ -1,0 +1,124 @@
+package src;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.ArrayList;
+
+public class Restoranes implements ICrud<Restoran>{
+	
+	public ArrayList<Restoran> listaRestoranes;
+	
+
+	@Override
+	public void add(Restoran t) {
+		
+		try {
+			FileWriter csvWriter = new FileWriter("new.csv",true);
+			
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append(this.getMaxId());
+		    sb.append(',');
+		    sb.append(t.nombre);
+		    sb.append('\n');
+		    
+		    csvWriter.write(sb.toString());
+		    
+			csvWriter.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
+
+	@Override
+	public void delete(long id) {
+		try {
+			FileWriter csvWriter = new FileWriter("new.csv",true);
+			FileReader fileReader = new FileReader("new.csv");
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            
+            String line;
+			while ((line = bufferedReader.readLine()) != null) {
+                if (line.isEmpty())
+                    break;
+
+                String[] rowData = line.split(",");
+                
+                if(Long.parseLong(rowData[0].trim()) == id)
+                	csvWriter.write("");
+            }
+			
+			bufferedReader.close();
+			csvWriter.close();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		
+	}
+
+	@Override
+	public ArrayList<Restoran> getList() {
+		
+		try {
+			FileReader fileReader = new FileReader("new.csv");
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            
+            String line;
+            
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.isEmpty())
+                    break;
+
+                String[] rowData = line.split(",");
+                long id = Integer.parseInt(rowData[0].trim());
+                
+                
+                this.listaRestoranes.add(new Restoran(id,rowData[1].trim()));
+            }
+            
+            bufferedReader.close();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+			return listaRestoranes;
+	}
+
+	@Override
+	public long getMaxId() {
+		
+		try {
+			FileReader fileReader = new FileReader("new.csv");
+		    BufferedReader bufferedReader = new BufferedReader(fileReader);
+		    
+		    String line;
+		    int maxId = 0;
+		    
+		    while ((line = bufferedReader.readLine()) != null) {
+		        if (line.isEmpty())
+		            break;
+		
+		        String[] rowData = line.split(",");
+		        int id = Integer.parseInt(rowData[0].trim());
+		        
+		        if(maxId < id)
+		        	maxId = id;
+		    }
+		    
+		    bufferedReader.close();
+		    
+		    return maxId + 1;
+		    
+		} catch (Exception e) {
+			return 0;
+		}
+
+		
+	}
+}

@@ -1,0 +1,87 @@
+package src;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.ArrayList;
+
+public class Productos implements ICrud<Producto>{
+
+	public ArrayList<Producto> listaProductos;
+	
+	public Productos() {
+
+		this.listaProductos = new ArrayList<Producto>();
+	}
+	
+	@Override
+	public void add(Producto t) {
+		try {
+			FileWriter csvWriter = new FileWriter("productos.csv",true);
+			
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append(this.getMaxId());
+		    sb.append(',');
+		    sb.append(t.nombre);
+		    sb.append('\n');
+		    
+		    csvWriter.write(sb.toString());
+		    
+			csvWriter.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
+	@Override
+	public void delete(Producto id) {
+		listaProductos.remove(id);
+	}
+
+	
+	public ArrayList<Producto> getList(long idRestoran) {
+		
+		try {
+			File file = new File("productos.csv");
+			this.listaProductos.removeAll(this.listaProductos);
+			
+			if(file.exists()) {
+				FileReader fileReader = new FileReader(file);
+	            BufferedReader bufferedReader = new BufferedReader(fileReader);
+	            
+	            String line;
+	            
+	            while ((line = bufferedReader.readLine()) != null) {
+	            	
+	                if (line.isEmpty())
+	                    break;
+
+	                String[] rowData = line.split(",");
+	                long _idRestoran = Integer.parseInt(rowData[0].trim());
+	                
+	                if(_idRestoran == idRestoran)
+	                this.listaProductos.add(new Producto(idRestoran,rowData[1].trim(),rowData[2].trim(), Long.parseLong(rowData[0].trim())));
+	            }
+	            
+	            bufferedReader.close();
+			}
+
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		return listaProductos;
+	}
+
+
+
+	
+	public long getMaxId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+}

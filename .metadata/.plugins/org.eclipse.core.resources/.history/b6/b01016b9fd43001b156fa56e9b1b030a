@@ -1,0 +1,12 @@
+package src;
+
+public class Producto {
+
+	private String nombre;
+	private long precio;
+	
+	public Producto(String nombre,long precio) {
+		this.nombre = nombre;
+		this.precio = precio;
+	}
+}

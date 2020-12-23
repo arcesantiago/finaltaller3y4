@@ -1,0 +1,32 @@
+package src;
+
+import java.util.ArrayList;
+
+public class Productos implements ICrud<Producto>{
+
+
+	public ArrayList<Producto> listaProductos;
+	
+	@Override
+	public void add(Producto t) {
+		listaProductos.add(t);
+	}
+
+	@Override
+	public void delete(long id) {
+		listaProductos.remove(id);
+	}
+
+	@Override
+	public ArrayList<Producto> getList() {
+		return listaProductos;
+	}
+
+
+
+	@Override
+	public long getMaxId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+}

@@ -6,7 +6,22 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
+		<item key="selection" value="eliminarProducto.setEnabled(false);"/>
 		<list key="findhistory">
+			<item value="eliminarProducto.setEnabled(false);"/>
+			<item value="nombreProdu"/>
+			<item value="jtable"/>
+			<item value="agregarr"/>
+			<item value="agregar"/>
+			<item value="combobox"/>
+			<item value="combobo"/>
+			<item value="agregarProducto"/>
+			<item value="agregarP"/>
+			<item value="JTable("/>
+			<item value="JTable"/>
+			<item value="comboite"/>
+			<item value="combo"/>
+			<item value="select"/>
 		</list>
 		<list key="replacehistory">
 		</list>

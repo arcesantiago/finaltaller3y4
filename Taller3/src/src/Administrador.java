@@ -1,44 +1,36 @@
 package src;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Graphics;
 import java.awt.Image;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
-import javax.imageio.ImageIO;
+import javax.swing.JDialog;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JSplitPane;
-import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.JTextField;
 import javax.swing.ImageIcon;
-import java.awt.Font;
-import java.awt.FlowLayout;
 import javax.swing.BoxLayout;
-import java.awt.GridLayout;
-import java.awt.CardLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 
-public class Administrador extends JFrame {
+public class Administrador extends JFrame implements ActionListener  {
 	private JTable table;
+	static JFrame frame;
+	static JDialog d; 
 	/**
 	 * Launch the application.
 	 */
@@ -62,63 +54,28 @@ public class Administrador extends JFrame {
 	 */
 	public Administrador() throws IOException {
 
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         JPanel productosPanel = new JPanel();
         productosPanel.setBorder(BorderFactory.createTitledBorder(
         BorderFactory.createEtchedBorder(), "Productos", TitledBorder.LEFT,
         TitledBorder.TOP));
-        String[][] rec = {
-           { "001", "David", "AUS" },
-           { "002", "Steve", "AUS" },
-           { "003", "Yuvraj", "IND" },
-           { "004", "Kane", "NZ" },
-           { "005", "Ben", "ENG" },
-           { "006", "Eion", "ENG" },
-           { "007", "Miller", "SA" },
-           { "008", "Rohit", "IND" },
-           { "006", "Eion", "ENG" },
-           { "007", "Miller", "SA" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" },
-           { "008", "Rohit", "IND" }
-           
-        };
-        String[] header = { "Codigo", "Nombre", "Precio" };
         
+        Restoranes restoranes = new Restoranes();
+        Productos productos = new Productos();
+
         JSplitPane splitPane = new JSplitPane();
         splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         productosPanel.add(splitPane);
-        JTable table_1 = new JTable(rec, header);
+        JTable table_1 = new JTable(){
+            public boolean editCellAt(int row, int column, java.util.EventObject e) {
+                return false;
+             }
+            };
+        DefaultTableModel dtm = new DefaultTableModel(0, 0);
+        String[] header = { "Codigo", "Nombre", "Precio" };
+        dtm.setColumnIdentifiers(header);
+        table_1.setModel(dtm);
+        
         JScrollPane scrollPane = new JScrollPane(table_1);
         splitPane.setLeftComponent(scrollPane);
         
@@ -126,11 +83,117 @@ public class Administrador extends JFrame {
         splitPane_1.setResizeWeight(0.5);
         splitPane.setRightComponent(splitPane_1);
         
+        JTextField nombreProducto = new JTextField(25);
+        JTextField precioProducto = new JTextField(10);
+        
+        precioProducto.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent ke) {
+               if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+            	   precioProducto.setEditable(true);
+            
+               } else {
+            	   precioProducto.setEditable(false);
+   
+               }
+            }
+         });
+
+        JPanel panelProductos = new JPanel();
+        panelProductos.add(new JLabel("Nombre:"));
+        panelProductos.add(nombreProducto);
+        panelProductos.add(Box.createHorizontalStrut(15));
+        panelProductos.add(new JLabel("Precio:"));
+        panelProductos.add(precioProducto);
+        
         JButton agregarProducto = new JButton("Agregar");
         splitPane_1.setLeftComponent(agregarProducto);
+  
+        JComboBox<Restoran> comboBox = new JComboBox<Restoran>();
+        comboBox.addItem(new Restoran(0,"Seleccione una opción"));
+        agregarProducto.setEnabled(false);
+		
+        
+        agregarProducto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				int result = JOptionPane.showConfirmDialog(null,panelProductos,"Ingrese los datos del producto:", JOptionPane.OK_CANCEL_OPTION);
+				
+				String _nombreProducto = nombreProducto.getText();
+				long _precioProducto = 0;
+				
+				if(result == JOptionPane.OK_OPTION) {
+					
+				
+					try {
+						_precioProducto = Long.parseLong(precioProducto.getText());
+					} catch (NumberFormatException e2) {
+						JOptionPane.showMessageDialog(null, "No se pudo ingresar. Los campos son obligatorios.");
+						nombreProducto.setText("");
+						precioProducto.setText("");
+						return;
+					}
+				if(_nombreProducto.length() > 0 && _precioProducto > 0){
+					Restoran selectedRestoran = (Restoran) comboBox.getSelectedItem();
+					
+					productos.add(new Producto(selectedRestoran.id,_nombreProducto,_precioProducto));
+
+					int rowCount = dtm.getRowCount();
+					for (int i = rowCount - 1; i >= 0; i--) {
+						dtm.removeRow(i);
+					}
+			           
+			           
+			           for (Producto producto : productos.getList(selectedRestoran.id)) {
+			        	   dtm.addRow(new String[] { "" + producto.id,(String)producto.nombre,"" + producto.precio });
+					}
+				}
+				
+			
+					
+				else {
+					JOptionPane.showMessageDialog(null, "No se pudo ingresar. Los campos son obligatorios.");
+				}
+				}
+				nombreProducto.setText("");
+				precioProducto.setText("");
+				
+			}
+		}); 
         
         JButton eliminarProducto = new JButton("Eliminar");
         splitPane_1.setRightComponent(eliminarProducto);
+        eliminarProducto.setEnabled(false);
+        
+        eliminarProducto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				JOptionPane.showMessageDialog(null, "Esta seguro que desea eliminar el producto?");
+				
+				Restoran selectedRestoran = (Restoran) comboBox.getSelectedItem();
+				
+				String idProducto = table_1.getValueAt(table_1.getSelectedRow(),0).toString();
+				
+				productos.delete( new Producto(selectedRestoran.id,Long.parseLong(idProducto)));
+				
+				int rowCount = dtm.getRowCount();
+				for (int i = rowCount - 1; i >= 0; i--) {
+					dtm.removeRow(i);
+				}
+				
+				 for (Producto producto : productos.getList(selectedRestoran.id)) {
+		        	   dtm.addRow(new String[] { "" + producto.id,(String)producto.nombre,"" + producto.precio });
+				}
+				
+				
+			}
+		}); 
+        
         frame.getContentPane().add(productosPanel, BorderLayout.SOUTH);
         
         JPanel restoranPanel = new JPanel();
@@ -151,17 +214,110 @@ public class Administrador extends JFrame {
         JButton agregarRestoran = new JButton("Agregar");
         splitPane_3.setLeftComponent(agregarRestoran);
         
+
+        JPanel panelRestoranes = new JPanel();
+        JTextField nombreRestoran = new JTextField(20);
+        panelRestoranes.add(new JLabel("Nombre:"));
+        panelRestoranes.add(nombreRestoran);
+        
+        
+
+        agregarRestoran.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				int result = JOptionPane.showConfirmDialog(null,panelRestoranes,"Ingrese los datos del producto:", JOptionPane.OK_CANCEL_OPTION);
+				String nuevoRestoran = nombreRestoran.getText();
+				
+				if(result == JOptionPane.OK_OPTION)
+					if(nuevoRestoran.length() > 0) {
+						comboBox.removeAllItems();
+						comboBox.addItem(new Restoran(0,"Seleccione una opción"));
+						comboBox.setSelectedIndex(0);
+						
+						restoranes.add(new Restoran(nuevoRestoran));
+
+						for (Restoran restoran : restoranes.getList()) {
+				        	comboBox.addItem(restoran);
+						}
+					}
+				
+				else {
+					JOptionPane.showMessageDialog(null, "No se pudo ingresar. El campo es obligatorio");
+				}
+				nombreRestoran.setText("");
+			}
+		}); 
+
         JButton eliminarRestoran = new JButton("Eliminar");
         splitPane_3.setRightComponent(eliminarRestoran);
+        eliminarRestoran.setEnabled(false);
         
-        JComboBox comboBox = new JComboBox();
+        eliminarRestoran.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				JOptionPane.showMessageDialog(null, "Esta seguro que desea eliminar el restoran");
+				
+				restoranes.delete((Restoran) comboBox.getSelectedItem());
+				
+				comboBox.removeAllItems();
+				comboBox.addItem(new Restoran(0,"Seleccione una opción"));
+				comboBox.setSelectedIndex(0);
+				
+				for (Restoran restoran : restoranes.getList()) {
+		        	comboBox.addItem(restoran);
+				}
+			}
+		}); 
+        
+      
+        
         splitPane_2.setLeftComponent(comboBox);
-        comboBox.setPrototypeDisplayValue("Seleccione un restoran");
-        comboBox.addItem("Seleccione un restoran");
-        comboBox.addItem("asdasdasdasdasdasdasdasdasd");
-        comboBox.addItem("asdasdasdasdasdasdasdasdasd");
+        
+        for (Restoran restoran : restoranes.getList()) {
+        	comboBox.addItem(restoran);
+		}
+        
+        Runnable myRunnable =
+        	    new Runnable(){
+        	        public void run(){
+        	        	Restoran selectedRestoran = (Restoran) comboBox.getSelectedItem();
+        	        	
+        	        	if(selectedRestoran == null || selectedRestoran.id == 0) {
+        	        		agregarProducto.setEnabled(false);
+        	        		eliminarProducto.setEnabled(false);
+        	        		eliminarRestoran.setEnabled(false);
+        	        	}
+        	        		
+        	        	else {
+        	        		agregarProducto.setEnabled(true);
+        	        		eliminarProducto.setEnabled(true);
+        	        		eliminarRestoran.setEnabled(true);
+        	        	}
+		            	
+		            	int rowCount = dtm.getRowCount();
+						for (int i = rowCount - 1; i >= 0; i--) {
+							dtm.removeRow(i);
+						}
+						
+		           if(selectedRestoran != null)
+		           for (Producto producto : productos.getList(selectedRestoran.id)) {
+		        	   dtm.addRow(new String[] { "" + producto.id,(String)producto.nombre,"" + producto.precio });
+				}
+        	        }
+        	    };
+        
+        comboBox.addActionListener (new ActionListener () {
+            public void actionPerformed(ActionEvent e) {
+            	myRunnable.run();
+            }
+        });
 
-        comboBox.addItem("asdasdasdasdasdasdasdasdasd");
         
         JPanel panel = new JPanel();
         
@@ -178,4 +334,18 @@ public class Administrador extends JFrame {
         frame.setVisible(true);
     }
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
+
+	
 }
+		
+
+	
+
+

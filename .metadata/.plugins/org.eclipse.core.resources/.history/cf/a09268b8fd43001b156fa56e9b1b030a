@@ -1,0 +1,15 @@
+package src;
+
+
+public class Restoran {
+
+	private long id;
+	private String nombre;
+	
+	
+	public Restoran(long id,String nombre) {
+		this.id = id;
+		this.nombre = nombre;
+		
+	}
+}
