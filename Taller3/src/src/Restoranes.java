@@ -108,7 +108,7 @@ public class Restoranes implements ICrud<Restoran>{
 	}
 
 	
-	public long getMaxId() {
+	private long getMaxId() {
 		
 		try {
 			FileReader fileReader = new FileReader("restoranes.csv");

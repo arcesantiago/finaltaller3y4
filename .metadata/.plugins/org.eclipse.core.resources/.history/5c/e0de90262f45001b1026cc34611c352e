@@ -110,7 +110,7 @@ public class Productos implements ICrud<Producto>{
 
 
 	
-	private long getMaxId(long idRestoran) {
+	public long getMaxId(long idRestoran) {
 		try {
 			FileReader fileReader = new FileReader("productos.csv");
 		    BufferedReader bufferedReader = new BufferedReader(fileReader);
